@@ -3,11 +3,11 @@ import Switch from './components/Switch';
 import './App.css';
 
 class Toggle extends React.Component {
-  static On = props => {
-    return props.on ? props.children : null;
+  static On = ({ on, children }) => {
+    return on ? children : null;
   };
-  static Off = props => {
-    return props.on ? null : props.children;
+  static Off = ({ on, children }) => {
+    return on ? null : children;
   };
   static Button = ({ on, toggle }) => {
     return <Switch on={on} onChange={toggle} />;
