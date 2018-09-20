@@ -4,9 +4,9 @@ class Switch extends React.Component {
   render() {
     const { on, onClick } = this.props;
     return (
-      <label class="switch" onClick={onClick}>
+      <label className="switch" onClick={onClick}>
         <input type="checkbox" checked={on} />
-        <span class="slider round" />
+        <span className="slider round" />
       </label>
     );
   }
