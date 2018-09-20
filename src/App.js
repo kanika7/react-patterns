@@ -3,6 +3,16 @@ import Switch from './components/Switch';
 import './App.css';
 
 class Toggle extends React.Component {
+  static On = props => {
+    return props.on ? props.children : null;
+  };
+  static Off = props => {
+    return props.on ? null : props.children;
+  };
+  static Button = ({ on, toggle }) => {
+    return <Switch on={on} onChange={toggle} />;
+  };
+
   state = {
     on: false
   };
@@ -19,7 +29,12 @@ class Toggle extends React.Component {
   };
 
   render() {
-    return <Switch on={this.state.on} onChange={this.toggle} />;
+    return React.Children.map(this.props.children, childElement => {
+      return React.cloneElement(childElement, {
+        on: this.state.on,
+        toggle: this.toggle
+      });
+    });
   }
 }
 
@@ -29,7 +44,13 @@ class App extends Component {
   }
 
   render() {
-    return <Toggle onToggle={this.onToggle} />;
+    return (
+      <Toggle onToggle={this.onToggle}>
+        <Toggle.On>Button is ON</Toggle.On>
+        <Toggle.Off>Button is OFF</Toggle.Off>
+        <Toggle.Button />
+      </Toggle>
+    );
   }
 }
 
