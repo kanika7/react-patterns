@@ -9,8 +9,10 @@ class Toggle extends React.Component {
 
   toggle = () => {
     this.setState(
-      {
-        on: !this.state.on
+      currentState => {
+        return {
+          on: !currentState.on
+        };
       },
       () => {
         this.props.onToggle(this.state.on);
