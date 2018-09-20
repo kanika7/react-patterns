@@ -21,7 +21,10 @@ class Toggle extends React.Component {
   };
 
   render() {
-    return <Switch on={this.state.on} onChange={this.toggle} />;
+    return this.props.children({
+      on: this.state.on,
+      toggle: this.toggle
+    });
   }
 }
 
@@ -31,7 +34,18 @@ class App extends Component {
   }
 
   render() {
-    return <Toggle onToggle={this.onToggle} />;
+    return (
+      <Toggle onToggle={this.onToggle}>
+        {({ on, toggle }) => {
+          return (
+            <div>
+              <Switch on={on} onChange={toggle} />
+              <button onClick={toggle}>{on ? 'on' : 'off'}</button>
+            </div>
+          );
+        }}
+      </Toggle>
+    );
   }
 }
 
