@@ -2,25 +2,39 @@ import React, { Component } from 'react';
 import Switch from './components/Switch';
 import './App.css';
 
-class Toggle extends React.Component {
-  static On = ({ on, children }) => {
-    return on ? children : null;
-  };
-  static Off = ({ on, children }) => {
-    return on ? null : children;
-  };
-  static Button = ({ on, toggle }) => {
-    return <Switch on={on} onChange={toggle} />;
-  };
+const ToggleContext = React.createContext();
 
-  state = {
-    on: false
+class Toggle extends React.Component {
+  static On = ({ children }) => {
+    return (
+      <ToggleContext.Consumer>
+        {contextValue => (contextValue.on ? children : null)}
+      </ToggleContext.Consumer>
+    );
+  };
+  static Off = ({ children }) => {
+    return (
+      <ToggleContext.Consumer>
+        {contextValue => (contextValue.on ? null : children)}
+      </ToggleContext.Consumer>
+    );
+  };
+  static Button = ({ toggle }) => {
+    return (
+      <ToggleContext.Consumer>
+        {contextValue => (
+          <Switch on={contextValue.on} onChange={contextValue.toggle} />
+        )}
+      </ToggleContext.Consumer>
+    );
   };
 
   toggle = () => {
     this.setState(
-      {
-        on: !this.state.on
+      currentState => {
+        return {
+          on: !currentState.on
+        };
       },
       () => {
         this.props.onToggle(this.state.on);
@@ -28,13 +42,17 @@ class Toggle extends React.Component {
     );
   };
 
+  state = {
+    on: false,
+    toggle: this.toggle
+  };
+
   render() {
-    return React.Children.map(this.props.children, childElement => {
-      return React.cloneElement(childElement, {
-        on: this.state.on,
-        toggle: this.toggle
-      });
-    });
+    return (
+      <ToggleContext.Provider value={this.state}>
+        {this.props.children}
+      </ToggleContext.Provider>
+    );
   }
 }
 
@@ -48,7 +66,9 @@ class App extends Component {
       <Toggle onToggle={this.onToggle}>
         <Toggle.On>Button is ON</Toggle.On>
         <Toggle.Off>Button is OFF</Toggle.Off>
-        <Toggle.Button />
+        <div>
+          <Toggle.Button />
+        </div>
       </Toggle>
     );
   }
